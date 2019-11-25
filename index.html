@@ -41,13 +41,9 @@
           <input type="submit" class="btn btn-primary input-group-btn" value="join">
         </div>
       </form>
-      <script>
-        let signin = document.forms.namedItem('signin');
-        signin.addEventListener("submit", (event) => {
-          let nickname = signin.elements.namedItem("nickname").value;
-          event.preventDefault();
-        });
-      </script>
+
+      
+
       <div class="toast toast-error mt-2 hidden">
       </div>
       
@@ -64,7 +60,7 @@
 
     </div>
   </div>
-
+  
   <script src="/socket.io/socket.io.js"></script>
   <script src="/client.js"></script>
 </body>
