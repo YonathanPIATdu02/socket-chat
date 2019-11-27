@@ -4,9 +4,12 @@ let socketClient = io();
 
 let signin = document.forms.namedItem('signin');
 signin.addEventListener("submit", (event) => {
-  let nickname = signin.elements.namedItem("nickname").value;
   event.preventDefault();
+  let nickname = signin.elements.namedItem("nickname").value;
   console.log(nickname);
-  socketClient.emit(nickname >signin);
+  socketClient.emit(">signin", nickname);
 });
 
+socketClient.on('<connected', pseudo => {
+  console.log(pseudo);
+})
