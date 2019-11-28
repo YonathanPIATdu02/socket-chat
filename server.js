@@ -57,16 +57,26 @@ socketServer.on('connection', function (socket) {
    */
   socket.on('>signin', pseudo => {
     if (isAvailable(pseudo)) {
-      console.log(pseudo);
       socket.emit('<connected', pseudo);
-      registeredSockets[pseudo] = 1;
-      socketServer.emit('<notification', 'L\'utilisateur <em>' + pseudo + '</em> est connecté')
+      registeredSockets[pseudo] = socket;
+      socketServer.emit('<notification', pseudo);
     } else {
-      socket.emit('<error', 'Pseudo invalide')
+      socket.emit('<error', 'Pseudo invalide');
     }
+  });
+
+  socket.on('>message', message => {
+    console.log(getNicknameBy(socket));
   });
 });
 
 function isAvailable(nickname) {
   return registeredSockets[nickname] === undefined;
+}
+function getNicknameBy(socket) {
+  for(const pseudo in registeredSockets){
+    if (pseudo == socket) {
+      return pseudo;
+    }
+  };
 }
