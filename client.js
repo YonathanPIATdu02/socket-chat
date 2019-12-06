@@ -19,7 +19,9 @@ socketClient.on('<connected', pseudo => {
 
 let displayNotif = document.querySelector('div#display');
 socketClient.on('<notification', pseudoNotification => { 
-  displayNotif.append( 'L\'utilisateur ' + pseudoNotification + ' est connecté ');
+  divNotif = document.createElement("DIV");
+  divNotif.innerHTML = '<span>L\'utilisateur ' + pseudoNotification + ' est connecté </span>'
+  displayNotif.appendChild(divNotif);
 });
 
 let displayError = document.querySelector("div.toast-error")
@@ -36,3 +38,17 @@ send.addEventListener("submit", (event) => {
   socketClient.emit(">message", message);
   send.elements.namedItem("message").value = '';
 });
+
+let displayMessage = document.querySelector("div#display");
+socketClient.on("<message", message => {
+    console.log(message);
+    let displayUser = document.createElement("DIV");
+    let displayText = document.createElement("DIV");
+    let date = new Date();
+    let jour = date.toLocaleDateString("h12");
+    let heure = date.toLocaleDateString("h12", {"hour12" : true,"formatMatcher" : "hour, minute, second"});
+    displayUser.innerHTML = `<span class="label label-rounded label-primary">${message.sender}</span>` + `<span class="text-gray">${jour}, ${heure}</span>`;
+    displayText.innerHTML = `<span> ${message.text}</span>`;
+    displayMessage.appendChild(displayUser);
+    displayMessage.appendChild(displayText);
+})

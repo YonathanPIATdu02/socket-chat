@@ -61,12 +61,13 @@ socketServer.on('connection', function (socket) {
       registeredSockets[pseudo] = socket;
       socketServer.emit('<notification', pseudo);
     } else {
-      socket.emit('<error', 'Pseudo invalide');
+      socket.emit('<error', 'Pseudo deja utiliser');
     }
   });
 
   socket.on('>message', message => {
-    console.log(getNicknameBy(socket));
+      nickname = getNicknameBy(socket);
+      socketServer.emit("<message", {'sender' : nickname, 'text' : message});
   });
 });
 
@@ -74,9 +75,9 @@ function isAvailable(nickname) {
   return registeredSockets[nickname] === undefined;
 }
 function getNicknameBy(socket) {
-  for(const pseudo in registeredSockets){
-    if (pseudo == socket) {
-      return pseudo;
+  for(var nickname in registeredSockets){
+    if (registeredSockets[nickname] == socket) {
+      return nickname;
     }
   };
 }
