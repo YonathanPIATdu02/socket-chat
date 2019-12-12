@@ -20,7 +20,7 @@ socketClient.on('<connected', pseudo => {
 let displayNotif = document.querySelector('div#display');
 socketClient.on('<notification', pseudoNotification => { 
   divNotif = document.createElement("DIV");
-  divNotif.innerHTML = '<span>L\'utilisateur ' + pseudoNotification + ' est connecté </span>'
+  divNotif.innerHTML = '<span class="text-gray">L\'utilisateur ' + pseudoNotification + '</span>'
   displayNotif.appendChild(divNotif);
 });
 
@@ -45,10 +45,9 @@ socketClient.on("<message", message => {
     let displayUser = document.createElement("DIV");
     let displayText = document.createElement("DIV");
     let date = new Date();
-    let jour = date.toLocaleDateString("h12");
-    let heure = date.toLocaleDateString("h12", {"hour12" : true,"formatMatcher" : "hour, minute, second"});
-    displayUser.innerHTML = `<span class="label label-rounded label-primary">${message.sender}</span>` + `<span class="text-gray">${jour}, ${heure}</span>`;
+    let jour = date.toLocaleDateString(undefined,{ hour12 : true, day: '2-digit', month: '2-digit' , year: 'numeric',  hour: '2-digit', minute: '2-digit' , second: '2-digit'});
+    displayUser.innerHTML = `<span class="label label-rounded label-primary">${message.sender}</span>` + `<span class="text-gray">${jour}</span>`;
     displayText.innerHTML = `<span> ${message.text}</span>`;
-    displayMessage.appendChild(displayUser);
-    displayMessage.appendChild(displayText);
+    displayMessage.prepend(displayText);
+    displayMessage.prepend(displayUser);
 })

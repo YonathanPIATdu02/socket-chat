@@ -5,6 +5,7 @@
 let express = require('express')();
 let http = require('http').createServer(express);
 let fs = require('fs').promises;
+var ent = require('ent');
 
 let socketServer = require('socket.io')(http);
 let registeredSockets = {};
@@ -56,28 +57,56 @@ socketServer.on('connection', function (socket) {
    *   the message content.
    */
   socket.on('>signin', pseudo => {
+    pseudo = ent.encode(pseudo);
     if (isAvailable(pseudo)) {
       socket.emit('<connected', pseudo);
       registeredSockets[pseudo] = socket;
-      socketServer.emit('<notification', pseudo);
+      socketServer.emit('<notification', pseudo + " est connecté");
+      socketServer.emit('<users', getAllNicknames());
     } else {
-      socket.emit('<error', 'Pseudo deja utiliser');
+      socket.emit('<error', 'Pseudo deja utiliser ou pas incorret');
     }
   });
-
+  socket.on('disconnect', pseudo =>{
+    console.log(socket);
+    //const pseudo = getNicknameBy(socket);
+    console.log(pseudo + " est partie");
+    if (pseudo) {
+      delete registeredSockets[pseudo];
+      socketServer.emit('<notification', pseudo + " est partie");
+      socketServer.emit('<users', getAllNicknames());
+    }
+  })
   socket.on('>message', message => {
-      nickname = getNicknameBy(socket);
-      socketServer.emit("<message", {'sender' : nickname, 'text' : message});
+      const pseudo = getNicknameBy(socket);
+      if (pseudo) {
+        message = ent.encode(message);
+        socketServer.emit("<message", {'sender' : pseudo, 'text' : message});
+      } else {
+        socket.emit('<error', 'Veuillez vous connecter !');
+      }
   });
 });
 
 function isAvailable(nickname) {
+  if (nickname === undefined){
+    return false;
+  }
   return registeredSockets[nickname] === undefined;
 }
+
 function getNicknameBy(socket) {
   for(var nickname in registeredSockets){
     if (registeredSockets[nickname] == socket) {
       return nickname;
     }
   };
+}
+
+function getAllNicknames() {
+  let nicknames = [];
+  for (let nickname in registeredSockets) {
+    nicknames.push(nickname);
+  }
+  return nicknames;
 }
