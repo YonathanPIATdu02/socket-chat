@@ -33,36 +33,54 @@
 </head>
 
 <body>
-  <div class="container">
-    <div id="dialog">
-      <form name="signin" class="mt-2">
-        <div class="input-group">
-          <input name="nickname" type="text" class="form-input" placeholder="choose a nickname (16 characters max.)" pattern="[A-Za-z0-9,-,_,.]{1,16}">
-          <input type="submit" class="btn btn-primary input-group-btn" value="join">
+
+<div class="container">
+  <div class="columns">
+
+    <div id="chatColumn" class="column col-12">
+
+      <div id="dialog">
+        <form name="signin" class="mt-2">
+          <div class="input-group">
+            <input name="nickname" type="text" class="form-input" placeholder="choose a nickname (16 characters max.)" pattern="[A-Za-z0-9,-,_,.]{1,16}">
+            <input type="submit" class="btn btn-primary input-group-btn" value="join">
+          </div>
+        </form>
+
+        <div class="toast toast-error mt-2 hidden">
         </div>
-      </form>
+        
+        <form name="send" class="mt-2 hidden">
+          <div class="input-group">
+            <span id="test" class="input-group-addon hide-sm">raoul</span>
+            <input name="message" type="text" class="form-input" placeholder="type your message here">
+            <input type="submit" class="btn btn-primary input-group-btn" value="send">
+          </div>
+        </form>
 
-      
-
-      <div class="toast toast-error mt-2 hidden">
-      </div>
-      
-      <form name="send" class="mt-2 hidden">
-        <div class="input-group">
-          <span id="test" class="input-group-addon hide-sm">raoul</span>
-          <input name="message" type="text" class="form-input" placeholder="type your message here">
-          <input type="submit" class="btn btn-primary input-group-btn" value="send">
+        <div id="display" class="bg-gray p-2 mt-2">
         </div>
-      </form>
-
-      <div id="display" class="bg-gray p-2 mt-2">
       </div>
 
     </div>
-  </div>
+
+    <div class="column col-2">
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th id="usersNumber"></th>
+              </tr>
+            </thead>
+            <tbody id="usersList">
+            </tbody>
+        </table>
+
+    </div>
   
   <script src="/socket.io/socket.io.js"></script>
   <script src="/client.js"></script>
+
 </body>
 
 </html>

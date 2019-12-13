@@ -1,6 +1,5 @@
 /*
  * server.js
- *
  */
 let express = require('express')();
 let http = require('http').createServer(express);
@@ -58,7 +57,7 @@ socketServer.on('connection', function (socket) {
    */
   socket.on('>signin', pseudo => {
     pseudo = ent.encode(pseudo);
-    if (isAvailable(pseudo)) {
+    if (isAvailable(pseudo) && pseudo) {
       socket.emit('<connected', pseudo);
       registeredSockets[pseudo] = socket;
       socketServer.emit('<notification', pseudo + " est connecté");
@@ -67,19 +66,18 @@ socketServer.on('connection', function (socket) {
       socket.emit('<error', 'Pseudo deja utiliser ou pas incorret');
     }
   });
-  socket.on('disconnect', pseudo =>{
-    console.log(socket);
-    //const pseudo = getNicknameBy(socket);
-    console.log(pseudo + " est partie");
-    if (pseudo) {
-      delete registeredSockets[pseudo];
-      socketServer.emit('<notification', pseudo + " est partie");
+  socket.on('disconnect', ()=>{
+    let nickname = getNicknameBy(socket);
+    if (nickname) {
+      delete registeredSockets[nickname];
+      socketServer.emit('<notification', nickname + " est partie");
       socketServer.emit('<users', getAllNicknames());
     }
   })
   socket.on('>message', message => {
       const pseudo = getNicknameBy(socket);
-      if (pseudo) {
+      if (!message) {
+      } else if (pseudo) {
         message = ent.encode(message);
         socketServer.emit("<message", {'sender' : pseudo, 'text' : message});
       } else {
